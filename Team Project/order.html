@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Not Just Dinner</title>
+	<link rel="stylesheet" type="text/css" href="notjustdinner.css">
+</head>
+<body>
+	
+	<div id = "wrap"><img class="logo" src="bannerlogo.jpg">
+			<div class = "navigation">
+				<a id = "top" href="UserInterface.html">Home</a>
+				<a href="contact.html">Contact</a>
+				<a id = "bottom" href="order.html">Order</a>
+			</div>
+			<main> 
+				<div id="title">
+					<h1>Order Page</h1>
+				</div>
+
+				<div id='form'>
+					<h3>Selection</h3>
+					<label>Day of the week: </label>
+						<select id='dropdown'>
+							<option value=''></option>
+							<option value='Monday'>Monday</option>
+							<option value='Tuesday'>Tuesday</option>
+							<option value='Wednesday'>Wednesday</option>
+							<option value='Thursday'>Thursday</option>
+							<option value='Friday'>Friday</option>
+							<option value='Saturday'>Saturday</option>
+						</select>
+				</div>
+
+				<div id="hiddenInput" hidden="True">
+					<label>Dish: </label><input type="textbox" id="fv" disabled>
+					<br><br>
+					<div id="image">
+						<img src='Potato_Meatball.jpg' id='potato' height='375' width='480' >
+						<img src='Lasagna.jpg' id='lasagna' hidden='True'>
+						<img src='Chicken_Pot_Pie.jpeg' id='chickenpotpie' height='375' width='480' >
+						<img src='Bow_Tie_Pasta.jpg' id='bow' height='375' width='480'>
+						<img src='Chicken_Tacos.jpg' id='chickentacos' height='375' width='480'>
+						<img src='Beef_Stew.jpg' id='beef' height='375' width='480'>
+					</div>
+					<h3>Order Details</h3><br>
+					<label>Serving Size: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<select id='ssDropdown'>
+							<option value=''></option>
+							<option value='1'>Small - $20</option>
+							<option value='2'>Medium - $40</option>
+							<option value='3'>Large - $80</option>
+						</select> <br>
+
+					<label>Quantity: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="number" id="quantity"> <br>
+					<label>Notes: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="textbox" id="notes"> <br>
+					<label>Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="textbox" id="customerName"> <br>
+					<label>Address: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="textbox" id="address"> <br>
+					<label>Phone #: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="textbox" id="phoneNumber"> <br><br>
+					<label>Total Due: </label><input type="textbox" id="total" disabled>
+					<br>
+					<br>
+
+					<button id="submit">Submit</button>
+					<button id="clear">Clear</button>
+				</div>
+				<script src="https://mysqljs.com/mysql.js" type="text/javascript"></script>
+
+				<script type="text/javascript">
+					// var foodArray=[];
+					var dataAsStr=[];
+
+					function processthedangform(){
+						let sqlStmt = "SELECT * From Food_List";
+
+						MySql.Execute("sql.wpc-is.online","thdespai","thde5922", "db_test_TeamA05",
+
+							sqlStmt, 
+							function(data){
+								// console.log(sqlStmt);
+								console.log(data);
+								for (i=0; i<JSON.stringify(data.Result.length);i++){
+								// dataAsStr = JSON.stringify(data);
+								// console.log(dataAsStr);
+								foodName = data.Result[i];
+
+								// foodName = JSON.stringify(data);
+								// console.log(foodName);
+								dataAsStr.push(foodName);
+
+								
+							}
+								console.log(dataAsStr);
+
+
+							});
+					}
+
+					function processthedangform2(){
+
+						var foodName = document.getElementById("fv").value;
+						var servingSize = document.getElementById("ssDropdown").selectedIndex.toString();
+						var quantity = document.getElementById("quantity").value;
+						var notes = document.getElementById("notes").value;
+						var name = document.getElementById("customerName").value;
+						var address = document.getElementById("address").value;
+						var phone = document.getElementById("phoneNumber").value;
+						let sqlStmt = "INSERT INTO Orders (FoodName,C_Name,Address,Phone,Quantity,Size, Notes) VALUES ('"+foodName+"','"+name+"','"+address+"','"+phone+"','"+quantity+"','"+servingSize+"','"+notes+"');";
+						console.log(sqlStmt);
+
+
+						MySql.Execute("sql.wpc-is.online","thdespai","thde5922", "db_test_TeamA05",
+
+							sqlStmt, function(err, resultSet){
+								if(err)
+									throw err;
+								else
+								{
+									console.log("\nResult Set: ")
+								}
+							}
+							// function(data){
+							// 	// console.log(sqlStmt);
+							// 	console.log(data);
+							// 	for (i=0; i<JSON.stringify(data.Result.length);i++){
+							// 	// dataAsStr = JSON.stringify(data);
+							// 	// console.log(dataAsStr);
+							// 	foodName = data.Result[i];
+
+							// 	// foodName = JSON.stringify(data);
+							// 	// console.log(foodName);
+							// 	dataAsStr.push(foodName);
+
+								
+							// }
+							// 	console.log(dataAsStr);
+
+
+							// }
+							);
+					}
+
+					// import {foodArray} from './db.js';
+					function output() {
+
+						
+
+						// var output = document.getElementById("output");
+						var day = document.getElementById("dropdown").selectedIndex;
+						var foodName = document.getElementById("fv");
+						var servingSize = document.getElementById("ssDropdown");
+						var quantity = document.getElementById("quantity");
+						var notes = document.getElementById("notes");
+						// var foodArray = ['','Potato Meatballs', 'Lasagna', 'Chicken Pot Pie', 'Bow Tie Pasta', 'Chicken Tacos', 'Beef Stew'];
+						
+						document.getElementById("hiddenInput").removeAttribute("hidden");
+						// console.log(foodArray);
+
+						food = dataAsStr[day-1]
+						foodName = food.Name;
+						// console.log(foodName);
+
+						if (foodName == 'Potato Meatballs') {
+							hidePicture()
+							document.getElementById("potato").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+						else if (foodName == 'Lasagna') {
+							hidePicture()
+							document.getElementById("lasagna").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+						else if (foodName == 'Chicken Pot Pie') {
+							hidePicture()
+							document.getElementById("chickenpotpie").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+						else if (foodName == 'Bow Tie Pasta') {
+							hidePicture()
+							document.getElementById("bow").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+						else if (foodName == 'Chicken Tacos') {
+							hidePicture()
+							document.getElementById("chickentacos").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+						else if (foodName == 'Beef Stew') {
+							hidePicture()
+							document.getElementById("beef").style.display = 'block';
+							document.getElementById("fv").value = foodName;	
+						}
+					}
+
+					function hidePicture(){
+						document.getElementById("potato").style.display = 'none';
+						document.getElementById("lasagna").style.display = 'none';
+						document.getElementById("chickenpotpie").style.display = 'none';
+						document.getElementById("bow").style.display = 'none';
+						document.getElementById("chickentacos").style.display = 'none';
+						document.getElementById("beef").style.display = 'none';
+						document.getElementById("fv").value = "";
+						document.getElementById("ssDropdown").selectedIndex = "0";
+						document.getElementById("quantity").value = "";
+						document.getElementById("notes").value = "";
+						document.getElementById("customerName").value = "";
+						document.getElementById("address").value = "";
+						document.getElementById("phoneNumber").value = "";
+						
+
+					}
+
+
+					var total = 0;
+
+					function submitOrder() {
+						var day = document.getElementById("dropdown").selectedIndex;
+						var foodName = document.getElementById("fv").value;
+						var servingSize = document.getElementById("ssDropdown").selectedIndex;
+						var quantity = document.getElementById("quantity").value;
+						var notes = document.getElementById("notes").value;
+						var customerName = document.getElementById("customerName").value;
+						var address = document.getElementById("address").value;
+						var phone = document.getElementById("phoneNumber").value;
+						var price = 0;
+						var tax = 0.07;
+						var shippingFee = 0.01;
+						var totalPrice = 0;
+
+
+						if (servingSize == 1)
+							price = 20;
+						else if (servingSize == 2)
+							price = 40;
+						else if (servingSize == 3)
+							price = 80;
+
+						totalPrice = price + (price*tax) + (price*shippingFee);
+						totalPrice = totalPrice * quantity;
+
+						total = parseFloat(total) + parseFloat(totalPrice);
+						total = parseFloat(total.toFixed(2));
+						document.getElementById("total").value = total;
+						console.log(total);
+						processthedangform2();
+						window.alert("Order Submitted!");
+						
+					}
+
+					function clear() {
+						document.getElementById("dropdown").selectedIndex = "0";
+						document.getElementById("fv").value = "";
+						document.getElementById("ssDropdown").selectedIndex = "0";
+						document.getElementById("quantity").value = "";
+						document.getElementById("notes").value = "";
+						document.getElementById("customerName").value = "";
+						document.getElementById("address").value = "";
+						document.getElementById("phoneNumber").value = "";
+
+					}
+
+					window.onload = function () {
+						document.getElementById("dropdown").onchange = output;
+						document.getElementById("submit").onclick = submitOrder;
+						document.getElementById("clear").onclick = clear;
+					}
+					processthedangform();
+
+				</script>
+			
+				<!-- <script text="text/javascript" src="db.js"></script>	 -->
+				<!-- <script text="text/javascript" src="javascript.js"></script> -->
+
+			
+			</main>
+	</div>
+</body>
+</html>
